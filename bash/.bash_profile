@@ -7,28 +7,23 @@
 
   # This function is called in your prompt to output your active git branch.
   function parse_git_branch {
-    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
   }
 
   # This function builds your prompt. It is called below
   function prompt {
-	
-    
 
     # Define a variable to reset the text color
     #local   RESET="\[\e[0m\]"
 
     # Here is where we actually export the PS1 Variable which stores the text for your prompt
-    export PS1="\e[0;33m\u\e[m@\e[0;34m\h\e[m:\e[0;35m\w\e[m\e[0;32m\$(parse_git_branch)\e[m\n$"
+    export PS1="\[\e[0;33m\]\u\[\e[0m\]@\[\e[0;34m\]\h\[\e[0m\]:\[\e[0;35m\]\W\[\e[0m\]\[\e[0;32m\]\$(parse_git_branch)\[\e[0m\]\n\$"
       PS2='> '
       PS4='+ '
     }
 
   # Finally call the function and our prompt is all pretty
   prompt
-
-  # For more prompt coolness, check out Halloween Bash:
-  # http://xta.github.io/HalloweenBash/
 
 # Environment Variables
 # =====================
@@ -62,6 +57,12 @@
     # Version
     # What version of the Flatiron School bash profile this is
     export FLATIRON_VERSION='1.1.1'
+
+    #directories
+
+    export REPOS="$HOME/Devops/Repos"
+    export DEV="$HOME/Devops"
+
   # Paths
 
     # The USR_PATHS variable will just store all relevant /usr paths for easier usage
@@ -137,9 +138,21 @@ function extract () {
 
 # Aliases
 # =====================
-  # LS
-  alias l='ls -lah'
-  alias la='ls -la'
+  # ls
+  alias ls='ls --color=auto'
+  alias ll='ls -la'
+  alias la='ls -lah'
+
+  #CLI
+  alias c='clear'
+  alias v='vim'
+  alias t='tmux'
+  alias e='exit'
+
+  #Repos
+  alias repos='cd $REPOS'
+
+  #K8S
   alias k='kubectl'
   alias kgp='kubectl get pods -A'
 
@@ -161,34 +174,14 @@ function extract () {
   alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
 
 # Case-Insensitive Auto Completion
-  bind "set completion-ignore-case on" 
-  
+  bind "set completion-ignore-case on"
+
 # Postgres
-export PATH=/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH
-
-# Final Configurations and Plugins
-# =====================
-  # Git Bash Completion
-  # Will activate bash git completion if installed
-  # via homebrew
-  if [ -f `brew --prefix`/etc/bash_completion ]; then
-    . `brew --prefix`/etc/bash_completion
-  fi
-
-  # RVM
-  # Mandatory loading of RVM into the shell
-  # This must be the last line of your bash_profile always
-  [[ -s "/Users/$USER/.rvm/scripts/rvm" ]] && source "/Users/$USER/.rvm/scripts/rvm"  # This loads RVM into a shell session.
-
-
-##
-# Your previous /Users/kmorris/.bash_profile file was backed up as /Users/kmorris/.bash_profile.macports-saved_2018-06-13_at_21:03:50
-##
+  export PATH=/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH
 
 # MacPorts Installer addition on 2018-06-13_at_21:03:50: adding an appropriate PATH variable for use with MacPorts.
 export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 # Finished adapting your PATH environment variable for use with MacPorts.
-
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
 export PATH="/Users/kmorris/.rd/bin:$PATH"
@@ -202,3 +195,35 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 # The original version is saved in .bash_profile.pysave
 PATH="/Library/Frameworks/Python.framework/Versions/3.13/bin:${PATH}"
 export PATH
+
+# Final Configurations and Plugins
+# =====================
+  # Git Bash Completion
+  # Will activate bash git completion if installed
+  # via homebrew
+  #OLD BREW CONFIG
+  # if [ -f `brew --prefix`/etc/bash_completion ]; then
+  #  . `brew --prefix`/etc/bash_completion
+  #fi
+
+  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+
+#kubectl completion
+alias k="kubectl"
+complete -F __start_kubectl k
+source /opt/homebrew/etc/profile.d/bash_completion.sh
+source <(kubectl completion bash)
+
+#chruby
+source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
+source /opt/homebrew/opt/chruby/share/chruby/auto.sh
+chruby ruby-3.4.4
+
+#bash BAE baby
+echo "bash $BASH_VERSION"
+source $HOME/.bashcommands.sh
+
+# RVM
+# Mandatory loading of RVM into the shell
+# This must be the last line of your bash_profile always
+[[ -s "/Users/$USER/.rvm/scripts/rvm" ]] && source "/Users/$USER/.rvm/scripts/rvm"  # This loads RVM into a shell session.
