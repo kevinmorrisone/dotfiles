@@ -1,0 +1,29 @@
+[env]
+TERM = "xterm-256color"
+
+[font]
+size = 25
+
+[font.normal]
+family = "UbuntuMono Nerd Font"
+
+[window]
+decorations = "Full"
+position = { x = 10, y = 10 } # (has no effect on Wayland)
+dimensions = { columns = 120, lines = 80 }
+
+[window.padding]
+x = 7
+y = 0
+
+[general]
+
+# themes from https://github.com/alacritty/alacritty-theme
+import = ["~/.config/alacritty/themes/themes/gruvbox_dark.toml"]
+
+#option_as_alt = "Both"
+#opacity = 0.7
+#blur = true
+
+[terminal]
+shell = { program = "/opt/homebrew/bin/bash/", args = ["-l"] }
